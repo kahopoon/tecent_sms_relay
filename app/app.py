@@ -14,9 +14,15 @@ def send_sms():
   api_secret = request.headers.get('API-SECRET')
   app_id = request.headers.get('APP-ID')
   sms_template_id = request.headers.get('SMS-TEMPLATE-ID')
-  phone_number = request.form['number']
-  sms_message = request.form['message']
-  request_remarks = request.form['remarks']
+  body_params = str(request.get_data().decode('utf-8')).split("&")
+  body_params_dict = {}
+  for x in body_params:
+    key_value = x.split("=")
+    body_params_dict[key_value[0]] = key_value[1]
+  print(body_params_dict)
+  phone_number = body_params_dict['number']
+  sms_message = body_params_dict['message']
+  request_remarks = body_params_dict['remarks']
   try:
     cred = credential.Credential(api_key, api_secret)
     httpProfile = HttpProfile()
@@ -52,4 +58,4 @@ def send_sms():
     return response
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8000)
